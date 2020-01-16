@@ -2,33 +2,38 @@ defmodule DayTwo do
   Code.require_file("./puzzle_input.ex", __DIR__)
 
   def calculate! do
-    IO.inspect(part_one())
+    part_one()
   end
 
   def part_one do
     test_program()
     |> compile_program()
-
-    ### THERE SHOULD BE SOME SORT OF LOOP IDEA THAT EXECUTES THE PROGRAM SO LONG
-    ### AS IT DOESN"T FIND A HCF
     |> execute_program()
   end
 
   def execute_program(program) do
+    IO.inspect(program)
     program_set = get_next(program)
-    perform_operation(program, program_set)
 
-    # take the program and chop into sets
+    case perform_operation(program, program_set) do
+      {:halt, finished_program} ->
+        IO.puts("ENDING PROGRAM")
+        read(finished_program, 0)
+
+      updated_program ->
+        execute_program(updated_program)
+    end
   end
 
   def perform_operation(program, [instruction_key | address_values]) do
-    # get the instruction
     instruction = get_instruction(instruction_key)
     instruction.(program, address_values)
   end
 
   def get_next(program) do
-    addresses = program.read_head..(program.read_head + 3)
+    addresses =
+      program.read_head..(program.read_head + 3)
+      |> Enum.map(& &1)
 
     Map.take(program.memory, addresses)
     |> Map.to_list()
@@ -40,7 +45,7 @@ defmodule DayTwo do
   end
 
   def instruction_set do
-    %{1 => &add/2, 99 => &hcf/1, 2 => &multiply/2}
+    %{1 => &add/2, 99 => &hcf/2, 2 => &multiply/2}
   end
 
   def read(program, address) do
@@ -57,7 +62,7 @@ defmodule DayTwo do
     Map.put(program, :read_head, program.read_head + 4)
   end
 
-  def hcf(_program), do: nil
+  def hcf(program, _addresses), do: {:halt, program}
 
   def add(program, addresses) do
     [addr_1, addr_2, addr_3] = addresses
@@ -94,7 +99,7 @@ defmodule DayTwo do
   end
 
   def test_program do
-    [2, 3, 0, 3, 99]
+    [1, 1, 1, 4, 99, 5, 6, 0, 99]
     |> Stream.map(& &1)
   end
 
