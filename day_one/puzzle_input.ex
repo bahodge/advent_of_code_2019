@@ -1,25 +1,5 @@
-defmodule ModuleFuelCalculator do
-  def calculate! do
-    puzzle_input |> calculate_all_fuel
-  end
-
-  defp calculate_all_fuel(list), do: calculate_all_fuel(list, 0)
-  defp calculate_all_fuel([], total), do: total
-
-  defp calculate_all_fuel([head | tail], total) do
-    calculate_all_fuel(tail, total + calculate_module_fuel(head))
-  end
-
-  defp calculate_module_fuel, do: 0
-
-  defp calculate_module_fuel(mass) do
-    div(mass, 3)
-    |> subtract_2
-  end
-
-  defp subtract_2(num), do: num - 2
-
-  defp puzzle_input do
+defmodule PuzzleInput do
+  def module_masses do
     [
       137_654,
       50175,
