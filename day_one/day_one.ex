@@ -2,22 +2,35 @@ defmodule DayOne do
   Code.require_file("./puzzle_input.ex", __DIR__)
 
   def calculate! do
-    # IO.inspect(part_one())
+    IO.inspect(part_one())
     IO.inspect(part_two())
   end
 
   def part_one do
     puzzle_input()
     # calculates fuel cost
-    |> Enum.map(&module_weight_fuel_cost/1)
+    |> Enum.map(&fuel_cost/1)
     # sums fuel cost
     |> Enum.sum()
   end
 
   def part_two do
+    puzzle_input()
+    |> Enum.map(&fuel_cost_precise/1)
+    |> Enum.sum()
   end
 
-  defp module_weight_fuel_cost(mass) do
+  # if the max result was 0, sum the acc
+  defp fuel_cost_precise(0, acc), do: Enum.sum(acc)
+  # intial entry
+  defp fuel_cost_precise(mass), do: fuel_cost_precise(mass, [])
+
+  defp fuel_cost_precise(mass, acc) do
+    result = fuel_cost(mass)
+    fuel_cost_precise(result, [result | acc])
+  end
+
+  defp fuel_cost(mass) do
     # returns int
     div(mass, 3)
     # subs 2
