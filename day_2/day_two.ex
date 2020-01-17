@@ -6,18 +6,18 @@ defmodule DayTwo do
   end
 
   def part_one do
-    test_program()
+    puzzle_input()
     |> compile_program()
+    |> write(1, 12)
+    |> write(2, 2)
     |> execute_program()
   end
 
   def execute_program(program) do
-    IO.inspect(program)
     program_set = get_next(program)
 
     case perform_operation(program, program_set) do
       {:halt, finished_program} ->
-        IO.puts("ENDING PROGRAM")
         read(finished_program, 0)
 
       updated_program ->
@@ -103,8 +103,8 @@ defmodule DayTwo do
     |> Stream.map(& &1)
   end
 
-  def puzzle_program do
-    Puzzleprogram.intcode()
-    |> Stream.map()
+  def puzzle_input do
+    PuzzleInput.intcode()
+    |> Stream.map(& &1)
   end
 end
